@@ -299,10 +299,10 @@ function Contact() {
 export default function Portfolio() {
   return (
     <div
-      className="relative min-h-screen bg-[#F4F6FB] text-slate-900 antialiased"
+      className="relative min-h-screen overflow-hidden bg-[#F2F2F5] text-slate-900 antialiased"
       style={{
         fontFamily: "'Inter', system-ui, sans-serif",
-        backgroundImage: "radial-gradient(60% 50% at 80% 20%, #E0E7FF 0%, transparent 70%), radial-gradient(50% 40% at 10% 90%, #CCFBF1 0%, transparent 70%)",
+        backgroundImage: "linear-gradient(180deg, #F7F7FA 0%, #ECEDF2 100%)",
       }}
     >
       <style>{`
@@ -312,6 +312,12 @@ export default function Portfolio() {
         a:focus-visible { outline: 2px solid #4f46e5; outline-offset: 3px; border-radius: 6px; }
       `}</style>
 
+      {/* Soft violet light behind the glass, as in the reference */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute -left-24 top-1/3 h-[28rem] w-[28rem] rounded-full bg-violet-400/40 blur-3xl" />
+        <div className="absolute right-[-6rem] top-10 h-[24rem] w-[24rem] rounded-full bg-fuchsia-300/30 blur-3xl" />
+        <div className="absolute left-1/3 bottom-[-8rem] h-[26rem] w-[26rem] rounded-full bg-indigo-300/30 blur-3xl" />
+      </div>
       <Scene />
       <Nav />
       <main className="relative z-10">
