@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Mail } from "lucide-react";
-import Massing from "../components/massing";
+import { ArrowUpRight, Download, Mail } from "lucide-react";
+import Scene, { hover } from "../components/scene";
 
 // ---------------------------------------------------------------------------
-// CONTENT: edit here. The layout below only renders it.
+// CONTENT
 // ---------------------------------------------------------------------------
 
 const PROFILE = {
@@ -18,7 +17,6 @@ const PROFILE = {
   email: "sedigojs@gmail.com",
   social: [
     { label: "GitHub", href: "https://github.com/SedigoJS" },
-    { label: "CV Resume", href: "/Joshua_Sedigo_Resume.pdf", download: true },
     { label: "LinkedIn", href: "https://linkedin.com/in/joshua-sedigo-463bb2341" },
   ],
 };
@@ -38,7 +36,7 @@ const WORK: {
     title: "Lume E-Commerce",
     description:
       "Full-stack e-commerce store with product discovery, cart management, and Stripe Checkout, backed by Prisma and PostgreSQL.",
-    tags: ["Online Store", "E-commerce", "Neon PostgreSQL", "Stripe"],
+    tags: ["E-commerce", "Neon PostgreSQL", "Stripe"],
     href: "https://lume-ecommerce.vercel.app/",
   },
   {
@@ -47,7 +45,7 @@ const WORK: {
     title: "LMS x AAI",
     description:
       "Learning management system for courses, assignments, and quizzes, with REST APIs and role-based access for admins, teachers, and students.",
-    tags: ["Role-Based Access", "Education Platform", "Full Stack"],
+    tags: ["Role-Based Access", "Education", "Full Stack"],
     href: "https://cwd-lms.vercel.app/",
   },
   {
@@ -55,8 +53,8 @@ const WORK: {
     year: "2024",
     title: "SurfxBini",
     description:
-      "Promo platform where users submit entries and staff validate them in an admin CMS, with AWS cloud storage for media and file uploads.",
-    tags: ["CMS", "Admin Panel", "User Submissions", "Full Stack"],
+      "Promo platform where users submit entries and staff validate them in an admin CMS, with AWS cloud storage for media and uploads.",
+    tags: ["CMS", "Admin Panel", "AWS"],
     href: "https://bini-con.vercel.app/",
   },
   {
@@ -81,7 +79,7 @@ const WORK: {
     title: "Randomizer",
     description:
       "A spin-wheel web app for random selection used in giveaways, decisions, and interactive activities.",
-    tags: ["Animations", "Dynamic UI", "Web App", "Full Stack"],
+    tags: ["Animations", "Dynamic UI", "Web App"],
     href: "https://randomizer-cwd.vercel.app/",
   },
   {
@@ -90,313 +88,171 @@ const WORK: {
     title: "CloudCast",
     description:
       "A weather app providing real-time forecasts and location-based weather data via API integration.",
-    tags: ["API", "Weather App", "Music App", "Next.js", "Full Stack"],
+    tags: ["API", "Weather", "Next.js"],
     href: "https://cloudcast-sy.vercel.app/",
   },
 ];
 
 const SPECS = [
-  {
-    label: "Frontend Development",
-    detail:
-      "Building responsive, accessible interfaces with React, Next.js, TypeScript, and Tailwind CSS, with reusable components.",
-  },
-  {
-    label: "Backend Development",
-    detail:
-      "Designing REST APIs and data models with Prisma and PostgreSQL, including authentication, role-based access, and payment integration with Stripe.",
-  },
-  {
-    label: "Deployment and Tooling",
-    detail:
-      "Shipping projects through Git, GitHub, and CI/CD pipelines, with hosting on Vercel, Cloudflare, and AWS.",
-  },
-  {
-    label: "Automation Tools",
-    detail:
-      "Building web tools and Windows scripts that process Excel, Word, and PDF files, including OCR and document generation.",
-  },
-  {
-    label: "Data and Documentation",
-    detail:
-      "Accurate record management, spreadsheet organization, and structured document handling.",
-  },
-  {
-    label: "Operations Support",
-    detail:
-      "Organizing case files, preparing documents, and managing office workflows with accuracy and deadline discipline.",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// STYLE TOKENS
-// ---------------------------------------------------------------------------
-
-const FONTS =
-  "@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');";
-
-const TOKENS = {
-  "--paper": "#ECE8DF",
-  "--paper-deep": "#E2DDD1",
-  "--ink": "#1C2127",
-  "--graphite": "#6B7079",
-  "--rule": "#C9C3B6",
-  "--signal": "#C2412D",
-  "--font-display": "'Instrument Serif', Georgia, serif",
-  "--font-body": "'IBM Plex Sans', system-ui, sans-serif",
-  "--font-mono": "'IBM Plex Mono', ui-monospace, monospace",
-} as React.CSSProperties;
-
-const MONO = { fontFamily: "var(--font-mono)" } as const;
-const DISPLAY = { fontFamily: "var(--font-display)" } as const;
+  ["Frontend Development", "Responsive, accessible interfaces with React, Next.js, TypeScript, and Tailwind CSS."],
+  ["Backend Development", "REST APIs and data models with Prisma and PostgreSQL, including auth, roles, and Stripe payments."],
+  ["Deployment and Tooling", "Git, GitHub, and CI/CD pipelines, with hosting on Vercel, Cloudflare, and AWS."],
+  ["Automation Tools", "Web tools and Windows scripts that process Excel, Word, and PDF files, including OCR."],
+  ["Data and Documentation", "Accurate record management, spreadsheet organization, and structured document handling."],
+  ["Operations Support", "Case files, document preparation, and office workflows with accuracy and deadline discipline."],
+] as const;
 
 // ---------------------------------------------------------------------------
 // PIECES
 // ---------------------------------------------------------------------------
 
+const CARD = "rounded-2xl border border-white bg-white/75 backdrop-blur-md shadow-[0_8px_30px_rgba(15,23,42,0.06)]";
+const PILL = "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition";
+
 function Nav() {
   return (
-    <header className="flex items-center justify-between px-6 sm:px-10 lg:px-14 py-6 border-b" style={{ borderColor: "var(--ink)" }}>
-      <a href="#top" className="text-2xl" style={{ ...DISPLAY }}>
-        JS
-      </a>
-      <nav className="hidden md:flex items-center gap-9 text-sm" style={{ ...MONO }}>
-        <a href="#work" className="hover:underline underline-offset-4">Work</a>
-        <a href="#capabilities" className="hover:underline underline-offset-4">Specifications</a>
-        <a href="#about" className="hover:underline underline-offset-4">About</a>
-      </nav>
-      <a
-        href={`mailto:${PROFILE.email}`}
-        className="flex items-center gap-1.5 text-sm border px-4 py-2 hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
-        style={{ borderColor: "var(--ink)", ...MONO }}
-      >
-        Say hello <ArrowUpRight size={14} />
-      </a>
+    <header className="fixed inset-x-0 top-0 z-20">
+      <div className="mx-auto mt-4 flex max-w-6xl items-center justify-between rounded-full border border-white bg-white/70 px-6 py-3 backdrop-blur-md shadow-sm mx-4 sm:mx-auto">
+        <a href="#hero" className="font-semibold tracking-tight">JS</a>
+        <nav className="hidden gap-8 text-sm text-slate-600 md:flex">
+          <a href="#work" className="hover:text-slate-900">Work</a>
+          <a href="#specs" className="hover:text-slate-900">Capabilities</a>
+          <a href="#about" className="hover:text-slate-900">About</a>
+        </nav>
+        <a href={`mailto:${PROFILE.email}`} className={`${PILL} bg-slate-900 text-white py-2 hover:bg-indigo-600`}>
+          Say hello <ArrowUpRight size={14} />
+        </a>
+      </div>
     </header>
   );
 }
 
-function SectionHead({ sheet, title }: { sheet: string; title: string }) {
+function Section({ id, children, className = "" }: { id: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className="flex items-end justify-between gap-6 border-b pb-4" style={{ borderColor: "var(--ink)" }}>
-      <h2 className="text-5xl sm:text-6xl leading-none" style={{ ...DISPLAY }}>
-        {title}
-      </h2>
-      <span className="text-xs whitespace-nowrap" style={{ ...MONO, color: "var(--graphite)" }}>
-        {sheet}
-      </span>
+    <section id={id} className={`relative flex items-center px-6 sm:px-10 lg:px-20 py-28 ${className}`}>
+      <div className="w-full max-w-6xl mx-auto lg:mx-0 lg:max-w-[46%]">{children}</div>
+    </section>
+  );
+}
+
+function Heading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div>
+      <p className="text-sm font-medium text-indigo-600">{eyebrow}</p>
+      <h2 className="mt-3 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900">{title}</h2>
     </div>
   );
 }
 
-function ScaleBar() {
-  return (
-    <div className="flex items-center gap-3 text-[11px]" style={{ ...MONO, color: "var(--graphite)" }}>
-      <div className="flex h-2 border" style={{ borderColor: "var(--ink)" }}>
-        {[0, 1, 2, 3].map((i) => (
-          <span key={i} className="w-6" style={{ background: i % 2 ? "var(--paper)" : "var(--ink)" }} />
-        ))}
-      </div>
-      <span>0 — 4 m</span>
-    </div>
-  );
-}
+// ---------------------------------------------------------------------------
+// SECTIONS
+// ---------------------------------------------------------------------------
 
 function Hero() {
   return (
-    <section id="top" className="grid lg:grid-cols-[5fr_7fr] gap-x-12 gap-y-12 items-center px-6 sm:px-10 lg:px-14 py-16 lg:py-20">
-      <div>
-        <p className="text-sm" style={{ ...MONO, color: "var(--graphite)" }}>
-          {PROFILE.role}
-        </p>
-        <h1 className="mt-6 leading-[0.92] tracking-tight" style={{ ...DISPLAY, fontSize: "clamp(4rem, 11vw, 9rem)" }}>
-          Joshua
-          <br />
-          Sedigo
-        </h1>
-        <p className="mt-8 max-w-lg text-lg leading-relaxed" style={{ color: "var(--graphite)" }}>
-          {PROFILE.tagline}
-        </p>
-        <p className="mt-10 flex items-center gap-2 text-sm" style={{ color: "var(--graphite)" }}>
-          <span className="h-2 w-2 rounded-full" style={{ background: "var(--signal)" }} />
-          Available for freelance and full-time opportunities
-        </p>
+    <Section id="hero" className="min-h-screen">
+      <p className="inline-flex items-center gap-2 rounded-full border border-white bg-white/70 px-4 py-1.5 text-sm text-slate-600 shadow-sm backdrop-blur">
+        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+        Available for freelance and full-time work
+      </p>
+      <h1 className="mt-8 text-6xl sm:text-7xl lg:text-8xl font-semibold leading-[0.95] tracking-tight text-slate-900">
+        Joshua
+        <br />
+        Sedigo
+      </h1>
+      <p className="mt-6 text-sm font-medium text-slate-500">{PROFILE.role}</p>
+      <p className="mt-6 max-w-lg text-lg leading-relaxed text-slate-600">{PROFILE.tagline}</p>
+      <div className="mt-10 flex flex-wrap gap-3">
+        <a href="#work" className={`${PILL} bg-indigo-600 text-white hover:bg-indigo-700`}>
+          View work <ArrowUpRight size={16} />
+        </a>
+        <a href="/Joshua_Sedigo_Resume.pdf" download="Joshua_Sedigo_CV.pdf" className={`${PILL} border border-slate-300 bg-white/70 text-slate-800 hover:bg-white`}>
+          <Download size={16} /> Resume
+        </a>
       </div>
-
-      <figure>
-        <div className="h-[55vh] lg:h-[70vh] border" style={{ borderColor: "var(--ink)", background: "var(--paper-deep)" }}>
-          <Massing />
-        </div>
-        <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-4 text-xs" style={{ ...MONO, color: "var(--graphite)" }}>
-          <span>Fig. 1: Massing model of six works, {PROFILE.location}</span>
-          <ScaleBar />
-        </figcaption>
-      </figure>
-    </section>
+    </Section>
   );
 }
 
 function Work() {
-  const [active, setActive] = useState<number>(0);
-  const rows = useRef<(HTMLElement | null)[]>([]);
-
-  // The row closest to the middle of the screen drives the model.
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(Number(e.target.getAttribute("data-i")));
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px" }
-    );
-    rows.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <section id="work" className="grid lg:grid-cols-[5fr_7fr] gap-x-12 px-6 sm:px-10 lg:px-14">
-      <div className="py-20">
-        <SectionHead sheet="Sheet A-02" title="Selected work" />
+    <Section id="work">
+      <Heading eyebrow="Selected work" title="Projects" />
+      <div className="mt-10 flex flex-col gap-4">
         {WORK.map((item, i) => (
           <article
             key={item.index}
-            ref={(el) => {
-              rows.current[i] = el;
-            }}
-            data-i={i}
-            onMouseEnter={() => setActive(i)}
-            className="grid grid-cols-[3rem_1fr] gap-x-4 gap-y-3 py-10 border-b"
-            style={{ borderColor: "var(--rule)" }}
+            onMouseEnter={() => (hover.index = i)}
+            onMouseLeave={() => (hover.index = -1)}
+            className={`${CARD} p-6 transition hover:shadow-[0_16px_40px_rgba(79,70,229,0.14)]`}
           >
-            <span className="text-sm pt-2" style={{ ...MONO, color: active === i ? "var(--signal)" : "var(--graphite)" }}>
-              {item.index}
-            </span>
-            <div>
-              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-medium text-indigo-600">{item.index}</p>
                 {item.href ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-3xl sm:text-4xl leading-tight hover:underline underline-offset-4 decoration-1"
-                    style={{ ...DISPLAY }}
-                  >
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="mt-1 block text-xl font-semibold text-slate-900 hover:text-indigo-600">
                     {item.title}
                   </a>
                 ) : (
-                  <span className="text-3xl sm:text-4xl leading-tight" style={{ ...DISPLAY }}>
-                    {item.title}
-                  </span>
+                  <h3 className="mt-1 text-xl font-semibold text-slate-900">{item.title}</h3>
                 )}
-                <span className="text-sm" style={{ ...MONO, color: "var(--graphite)" }}>
-                  {item.year}
-                </span>
               </div>
-              <p className="mt-3 max-w-md text-sm leading-relaxed" style={{ color: "var(--graphite)" }}>
-                {item.description}
-              </p>
+              <span className="text-sm text-slate-400">{item.year}</span>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.description}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {item.tags.map((t) => (
+                <span key={t} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">{t}</span>
+              ))}
+            </div>
+            {item.links && (
               <div className="mt-4 flex flex-wrap gap-2">
-                {item.tags.map((tag) => (
-                  <span key={tag} className="text-[11px] px-2 py-0.5 border" style={{ borderColor: "var(--rule)", ...MONO, color: "var(--graphite)" }}>
-                    {tag}
-                  </span>
+                {item.links.map((l) => (
+                  <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700 hover:border-indigo-400 hover:text-indigo-600">
+                    {l.label}
+                  </a>
                 ))}
               </div>
-              {item.links && (
-                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                  {item.links.map((l) => (
-                    <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-1" style={{ ...MONO }}>
-                      {l.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </article>
         ))}
       </div>
-
-      {/* Pinned model: stays in view while the schedule scrolls past it. */}
-      <div className="lg:sticky lg:top-0 lg:h-screen py-10 lg:py-20">
-        <figure className="h-full flex flex-col">
-          <div className="flex-1 min-h-[60vh] border" style={{ borderColor: "var(--ink)", background: "var(--paper-deep)" }}>
-            <Massing activeIndex={active} onSelect={setActive} />
-          </div>
-          <figcaption className="mt-4 text-xs" style={{ ...MONO, color: "var(--graphite)" }}>
-            Fig. 2: {WORK[active].title}, volume {WORK[active].index}. Click a volume to select it.
-          </figcaption>
-        </figure>
-      </div>
-    </section>
+    </Section>
   );
 }
 
-function Specifications() {
+function Specs() {
   return (
-    <section id="capabilities" className="px-6 sm:px-10 lg:px-14 py-20 border-t" style={{ borderColor: "var(--ink)" }}>
-      <SectionHead sheet="Sheet A-03" title="Specifications" />
-      <div className="mt-2">
-        {SPECS.map((s, i) => (
-          <div
-            key={s.label}
-            className="grid grid-cols-[3rem_1fr] md:grid-cols-[5rem_1fr_1.6fr] gap-x-6 gap-y-2 py-7 border-b"
-            style={{ borderColor: "var(--rule)" }}
-          >
-            <span className="text-sm pt-1" style={{ ...MONO, color: "var(--signal)" }}>
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <h3 className="text-2xl" style={{ ...DISPLAY }}>
-              {s.label}
-            </h3>
-            <p className="col-span-2 md:col-span-1 text-sm leading-relaxed" style={{ color: "var(--graphite)" }}>
-              {s.detail}
-            </p>
+    <Section id="specs">
+      <Heading eyebrow="Capabilities" title="What I build with" />
+      <div className="mt-10 flex flex-col gap-3">
+        {SPECS.map(([label, detail]) => (
+          <div key={label} className={`${CARD} p-5`}>
+            <h3 className="font-semibold text-slate-900">{label}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">{detail}</p>
           </div>
         ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
 function About() {
-  const years = getExperience();
   return (
-    <section id="about" className="grid lg:grid-cols-[5fr_7fr] gap-x-12 gap-y-12 px-6 sm:px-10 lg:px-14 py-20 border-t" style={{ borderColor: "var(--ink)" }}>
-      <figure>
-        <div
-          className="aspect-[4/5] border p-3"
-          style={{ borderColor: "var(--ink)", background: "var(--paper-deep)" }}
-        >
-          <div
-            className="h-full w-full bg-center bg-cover"
-            style={{ backgroundImage: "url('/profile.jpg')" }}
-            role="img"
-            aria-label="Portrait of Joshua Sedigo"
-          />
+    <Section id="about">
+      <Heading eyebrow="About" title="Who I am" />
+      <p className="mt-8 text-xl sm:text-2xl leading-relaxed text-slate-700">{PROFILE.bio}</p>
+      <div className="mt-10 grid max-w-sm grid-cols-2 gap-4">
+        <div className={`${CARD} p-5`}>
+          <p className="text-xs text-slate-500">Based in</p>
+          <p className="mt-1 font-semibold text-slate-900">{PROFILE.location}</p>
         </div>
-        <figcaption className="mt-4 text-xs" style={{ ...MONO, color: "var(--graphite)" }}>
-          Fig. 3: Elevation, portrait
-        </figcaption>
-      </figure>
-
-      <div>
-        <SectionHead sheet="Sheet A-04" title="About" />
-        <p className="mt-10 text-3xl sm:text-4xl leading-snug" style={{ ...DISPLAY }}>
-          {PROFILE.bio}
-        </p>
-        <dl className="mt-12 grid grid-cols-2 gap-6 max-w-sm text-sm">
-          <div>
-            <dt style={{ ...MONO, color: "var(--graphite)" }}>Based in</dt>
-            <dd className="mt-1">{PROFILE.location}</dd>
-          </div>
-          <div>
-            <dt style={{ ...MONO, color: "var(--graphite)" }}>Experience</dt>
-            <dd className="mt-1">{years}</dd>
-          </div>
-        </dl>
+        <div className={`${CARD} p-5`}>
+          <p className="text-xs text-slate-500">Experience</p>
+          <p className="mt-1 font-semibold text-slate-900">{getExperience()}</p>
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }
 
@@ -413,53 +269,26 @@ function getExperience() {
   return `${y} ${m}`;
 }
 
-/** Footer as a drawing title block: project, author, scale, sheet, plus the contact call to action. */
 function Contact() {
-  const cells = [
-    ["Project", "Portfolio"],
-    ["Drawn by", PROFILE.name],
-    ["Scale", "1:1"],
-    ["Sheet", "A-01 of 01"],
-  ];
   return (
-    <footer id="contact" className="px-6 sm:px-10 lg:px-14 py-20 border-t" style={{ borderColor: "var(--ink)" }}>
-      <a href={`mailto:${PROFILE.email}`} className="group flex items-center gap-4 text-6xl sm:text-8xl leading-none" style={{ ...DISPLAY }}>
+    <Section id="contact" className="min-h-[70vh]">
+      <p className="text-sm font-medium text-indigo-600">Get in touch</p>
+      <a href={`mailto:${PROFILE.email}`} className="group mt-4 inline-flex items-center gap-3 text-5xl sm:text-6xl font-semibold tracking-tight text-slate-900">
         Let&apos;s talk
-        <ArrowUpRight size={56} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" style={{ color: "var(--signal)" }} />
+        <ArrowUpRight size={48} className="text-indigo-600 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
       </a>
-
-      <dl className="mt-16 grid grid-cols-2 md:grid-cols-4 border-t border-l text-sm" style={{ borderColor: "var(--ink)" }}>
-        {cells.map(([k, v]) => (
-          <div key={k} className="border-b border-r p-4" style={{ borderColor: "var(--ink)" }}>
-            <dt className="text-xs" style={{ ...MONO, color: "var(--graphite)" }}>{k}</dt>
-            <dd className="mt-1">{v}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <div className="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 text-sm">
-        <a href={`mailto:${PROFILE.email}`} className="flex items-center gap-2 hover:underline underline-offset-4" style={{ ...MONO }}>
+      <div className="mt-10 flex flex-col gap-4 text-sm text-slate-600">
+        <a href={`mailto:${PROFILE.email}`} className="inline-flex items-center gap-2 hover:text-slate-900">
           <Mail size={14} /> {PROFILE.email}
         </a>
-        <div className="flex items-center gap-6">
+        <div className="flex gap-6">
           {PROFILE.social.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              download={s.download ? "Joshua_Sedigo_CV.pdf" : undefined}
-              target={!s.download ? "_blank" : undefined}
-              rel={!s.download ? "noopener noreferrer" : undefined}
-              className="hover:underline underline-offset-4"
-            >
-              {s.label}
-            </a>
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">{s.label}</a>
           ))}
         </div>
-        <span className="text-xs" style={{ ...MONO, color: "var(--graphite)" }}>
-          © {new Date().getFullYear()} {PROFILE.name}
-        </span>
+        <p className="mt-6 text-xs text-slate-400">© {new Date().getFullYear()} {PROFILE.name}</p>
       </div>
-    </footer>
+    </Section>
   );
 }
 
@@ -470,36 +299,28 @@ function Contact() {
 export default function Portfolio() {
   return (
     <div
+      className="relative min-h-screen bg-[#F4F6FB] text-slate-900 antialiased"
       style={{
-        ...TOKENS,
-        background: "var(--paper)",
-        color: "var(--ink)",
-        fontFamily: "var(--font-body)",
-        minHeight: "100vh",
+        fontFamily: "'Inter', system-ui, sans-serif",
+        backgroundImage: "radial-gradient(60% 50% at 80% 20%, #E0E7FF 0%, transparent 70%), radial-gradient(50% 40% at 10% 90%, #CCFBF1 0%, transparent 70%)",
       }}
     >
       <style>{`
-        ${FONTS}
-        * { box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         html { scroll-behavior: smooth; }
-        @media (prefers-reduced-motion: reduce) {
-          html { scroll-behavior: auto; }
-        }
-        a:focus-visible, button:focus-visible {
-          outline: 2px solid var(--signal);
-          outline-offset: 3px;
-        }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+        a:focus-visible { outline: 2px solid #4f46e5; outline-offset: 3px; border-radius: 6px; }
       `}</style>
 
-      {/* Drawing sheet frame */}
-      <div className="m-3 sm:m-5 border min-h-[calc(100vh-2.5rem)]" style={{ borderColor: "var(--ink)" }}>
-        <Nav />
-        <main>
-          <Hero />
-          <Work />
-          <Specifications />
-          <About />
-        </main>
+      <Scene />
+      <Nav />
+      <main className="relative z-10">
+        <Hero />
+        <Work />
+        <Specs />
+        <About />
+      </main>
+      <div className="relative z-10">
         <Contact />
       </div>
     </div>
